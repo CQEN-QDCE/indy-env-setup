@@ -1,4 +1,4 @@
-# Configurer de l'environnement Hyperledger Indy
+# Configurer l'environnement Hyperledger Indy
 ![Alt text](/indy-logo.png?raw=true "Hyperledger Indy")
 
 Ce référentiel explique comment configurer localement un grand livre Hyperledger Indy et son environnement dans un **but de développement**. Ces instructions peuvent être légèrement mises à jour, il est donc recommandé de visiter également [Hyperledger Indy SDK repository](https://github.com/hyperledger/indy-sdk) pour plus de détails. Ces instructions sont strictement réservées aux machines locales pour la configuration d'un environnement de développement. Il est fortement déconseillé d'utiliser ces instructions pour le déploiement d'un environnement de production, car cela pourrait entraîner de graves problèmes de sécurité.
