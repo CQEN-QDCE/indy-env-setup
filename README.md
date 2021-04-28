@@ -1,32 +1,30 @@
-# Setup Hyperledger Indy Environment
+# Configurer de l'environnement Hyperledger Indy
 ![Alt text](/indy-logo.png?raw=true "Hyperledger Indy")
 
-This repository explicitly explains how to setup a hyperledger indy test ledger locally and its environment for **development purpose**. These insturctions may slightly update so it is recommended to also visit [Hyperledger Indy SDK repository](https://github.com/hyperledger/indy-sdk) for more details. These intructions are strictly inteded for local machines to setup for a development environment. It is highly advised to not use these instructions for production environment deployment as it could lead to serious security issues.
+Ce référentiel explique comment configurer localement un grand livre Hyperledger Indy et son environnement dans un **but de développement**. Ces instructions peuvent être légèrement mises à jour, il est donc recommandé de visiter également [Hyperledger Indy SDK repository](https://github.com/hyperledger/indy-sdk) pour plus de détails. Ces instructions sont strictement réservées aux machines locales pour la configuration d'un environnement de développement. Il est fortement déconseillé d'utiliser ces instructions pour le déploiement d'un environnement de production, car cela pourrait entraîner de graves problèmes de sécurité.
 
-Hyperledger Indy is a complex software ecosystem and it is comprised of 3 core components:
+Hyperledger Indy est un écosystème logiciel complexe et il est composé de 3 éléments principaux :
 * [indy-node](https://github.com/hyperledger/indy-node)
 * [indy-plenum](https://github.com/hyperledger/indy-plenum)
 * [indy-sdk](https://github.com/hyperledger/indy-sdk)
 
-*[Hyperledger Aries](https://github.com/hyperledger/aries) and [Hyperledger Ursa](https://github.com/hyperledger/ursa) are libraries that are important for developing with hyperledger indy and will be used in later phase. They are contexually out of scope for this particular tutorial.*
-
+*[Hyperledger Aries](https://github.com/hyperledger/aries) et [Hyperledger Ursa](https://github.com/hyperledger/ursa) sont des bibliothèques importantes pour le développement avec Hyperledger Indy et seront utilisées dans une phase ultérieure. Elles sont contextuellement hors de portée pour ce tutoriel particulier.*
 
 ### Indy Node
-Indy Node is a server portion of a distributed ledger purpose-built for decentralized identity. It embodies all the functionality to run nodes (validators and/or observers) that provide a [self-sovereign identity](https://sovrin.org/) ecosystem on top of a distributed ledger.
+Indy Node est la partie serveur d'un grand livre distribué conçu spécialement pour l'identité décentralisée. Il comprend toutes les fonctionnalités permettant d'exécuter des nœuds (validateurs et/ou observateurs) qui fournissent un écosystème d'[identité auto-souveraine] (https://sovrin.org/) au-dessus d'un grand livre distribué.
 
 ### Indy Plenum
-Indy Plenum implements the [Plenum Byzantine Fault Tolerant Protocol](http://pakupaku.me/plaublin/rbft/5000a297.pdf). Plenum is the heart of the distributed ledger technology inside Hyperledger Indy. As such, it provides features somewhat similar in scope to those found in Hyperledger Fabric. However, it is special-purposed for use in an identity system, whereas Fabric is general purpose.
+Indy Plenum met en œuvre le [Plenum Byzantine Fault Tolerant Protocol] (http://pakupaku.me/plaublin/rbft/5000a297.pdf). Plenum est le cœur de la technologie de grand livre distribué de Hyperledger Indy. En tant que tel, il fournit des fonctionnalités assez similaires à celles trouvées dans Hyperledger Fabric. Cependant, il est spécialement conçu pour être utilisé dans un système d'identité, alors que Fabric est d'usage général.
 
 ### Indy SDK
-It is the official SDK for [Hyperledger Indy](https://www.hyperledger.org/projects/hyperledger-indy), which provides a distributed-ledger-based foundation for [self-sovereign identity](https://sovrin.org/). Indy provides a software ecosystem for private, secure, and powerful identity, and the Indy SDK enables clients for it. The major artifact of the SDK is a C-callable library; there are also convenience wrappers for various programming languages and Indy CLI tool.
-
+Il s'agit du SDK officiel de [Hyperledger Indy] (https://www.hyperledger.org/projects/hyperledger-indy), qui fournit une fondation basée sur un registre distribué pour [l'identité auto-souveraine] (https://sovrin.org/). Indy fournit un écosystème logiciel pour une identité privée, sécurisée et puissante, et le SDK Indy permet de développer des clients. L'artefact principal du SDK est une bibliothèque appelable en C ; il existe également des wrappers pratiques pour divers langages de programmation et l'outil Indy CLI.
 
 # Development Environment
 
 ## MacOS
 
-1. Install Rust and rustup (https://www.rust-lang.org/install.html).
-2. Install required native libraries and utilities (libsodium is added with URL to homebrew since version<1.0.15 is required)
+1. Installer Rust et rustup (https://www.rust-lang.org/install.html).
+2. Installer les bibliothèques et utilitaires natifs requis (libsodium est ajouté avec l'URL à homebrew puisque la version<1.0.15 est requise)
    ```
    brew install pkg-config
    brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/65effd2b617bade68a8a2c5b39e1c3089cc0e945/Formula/libsodium.rb   
@@ -37,37 +35,37 @@ It is the official SDK for [Hyperledger Indy](https://www.hyperledger.org/projec
    brew install zeromq
    brew install zmq
    ```
-3. Setup environment variables:
+3. Configurer les variables d'environnement :
    ```
    export PKG_CONFIG_ALLOW_CROSS=1
    export CARGO_INCREMENTAL=1
    export RUST_LOG=indy=trace
    export RUST_TEST_THREADS=1
    ```
-4. Setup OPENSSL_DIR variable: path to installed openssl library
+4. Configurer la variable OPENSSL_DIR : chemin vers la bibliothèque openssl installée
    ```
    for version in `ls -t /usr/local/Cellar/openssl/`; do
         export OPENSSL_DIR=/usr/local/Cellar/openssl/$version
         break
    done
    ```
-5. Checkout and build the library:
+5. Cloner et compiler la bibliothèque:
    ```
    git clone https://github.com/hyperledger/indy-sdk.git
    cd ./indy-sdk/libindy
    cargo build
    ```
-6. To compile the CLI, libnullpay, or other items that depend on libindy:
+6. Pour compiler le CLI, libnullpay, ou d'autres éléments qui dépendent de libindy :
    ```
    export LIBRARY_PATH=/path/to/sdk/libindy/target/<config>
    cd ../cli
    cargo build
    ```
-7. Set your `DYLD_LIBRARY_PATH` and `LD_LIBRARY_PATH` environment variables to the path of `indy-sdk/libindy/target/debug`. You may want to put these in your `.bash_profile` to persist them.
+7. Définissez vos variables d'environnement `DYLD_LIBRARY_PATH` et `LD_LIBRARY_PATH` au chemin de `indy-sdk/libindy/target/debug`. Vous pouvez les mettre dans votre `.bash_profile` pour les conserver.
 
-### Note on running local nodes
+### Note sur le fonctionnement des nœuds locaux
 
-In the cloned 'indy-sdk' folder from (https://github.com/hyperledger/indy-sdk.git) you will see a 'ci' folder, Start the pool of local nodes on 127.0.0.1:9701-9708 with Docker by running:
+Dans le dossier 'indy-sdk' cloné depuis (https://github.com/hyperledger/indy-sdk.git), vous verrez un dossier 'ci'. Démarrez le pool de nœuds locaux sur 127.0.0.1:9701-9708 avec Docker en exécutant:
 
 ```
 docker build -f ci/indy-pool.dockerfile -t indy_pool .
@@ -78,8 +76,8 @@ You can also try automated build by cloning the (https://github.com/hyperledger/
 
 ## Linux (Ubuntu 16.04)
 
-1. Install Rust and rustup (https://www.rust-lang.org/install.html).
-1. Install required native libraries and utilities:
+1. Installer Rust et rustup (https://www.rust-lang.org/install.html).
+1. Installer les bibliothèques natives et les utilitaires requis:
 
    ```
    apt-get update && \
@@ -93,8 +91,8 @@ You can also try automated build by cloning the (https://github.com/hyperledger/
       libncursesw5-dev
    ```
    
-1. `libindy` requires the modern `1.0.14` version of `libsodium` but Ubuntu 16.04 does not support installation it's from `apt` repository.
- Because of this, it requires to build and install `libsodium` from source:
+1. `libindy` nécessite la version moderne `1.0.14` de `libsodium` mais Ubuntu 16.04 ne supporte pas l'installation depuis le dépôt `apt`.
+ Pour cette raison, il faut compiler et installer `libsodium` à partir des sources :
  ```
 cd /tmp && \
    curl https://download.libsodium.org/libsodium/releases/old/unsupported/libsodium-1.0.14.tar.gz | tar -xz && \
@@ -105,7 +103,7 @@ cd /tmp && \
     rm -rf /tmp/libsodium-1.0.14
 ```
 
-4. Build `libindy`
+4. Compiler `libindy`
 
    ```
    git clone https://github.com/hyperledger/indy-sdk.git
@@ -114,13 +112,13 @@ cd /tmp && \
    cd ..
    ```
    
-**Note:** `libindy` debian package, installed from the apt repository, is statically linked with `libsodium`. 
-For manually building this can be achieved by passing `--features sodium_static` into `cargo build` command.
+**Note:** Le paquet debian `libindy`, installé depuis le dépôt apt, est lié statiquement avec `libsodium`. 
+Pour une construction manuelle, ceci peut être réalisé en passant `--features sodium_static` dans la commande `cargo build`.
    
  
-### Note on running local nodes
+### Note sur le fonctionnement des nœuds locaux
 
-In the cloned 'indy-sdk' folder from (https://github.com/hyperledger/indy-sdk.git) you will see a 'ci' folder, Start the pool of local nodes on 127.0.0.1:9701-9708 with Docker by running:
+Dans le dossier 'indy-sdk' cloné depuis (https://github.com/hyperledger/indy-sdk.git), vous verrez un dossier 'ci'. Démarrez le pool de nœuds locaux sur 127.0.0.1:9701-9708 avec Docker en exécutant:
 
 ```
 docker build -f ci/indy-pool.dockerfile -t indy_pool .
@@ -129,134 +127,134 @@ docker run -itd -p 9701-9708:9701-9708 indy_pool
 
 ## Windows
 
-### Build Environment
+### Environnement de compilation
 
-1. Setup a windows virtual machine. Free images are available at [here](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/)
-1. Launch the virtual machine 
-1. Download Visual Studio Community Edition 2017 (these instructions also work with Visual Studio Professional 2017)
-1. Check the boxes for the _Desktop development with C++_ and _Linux Development with C++_
-1. In the summary portion on the right hand side also check _C++/CLI support_
-1. Click install
-1. Download git-scm for windows [here](https://git-scm.com/download/win)
-1. Install git for windows using:
-   1. _Use Git from Git Bash Only_ so it doesn't change any path settings of the command prompt
-   1. _Checkout as is, commit Unix-style line endings_. You shouldn't be commiting anything anyway but just in case
-   1. _Use MinTTY_
-   1. Check all the boxes for:
+1. Configurer une machine virtuelle Windows. Des images gratuites sont disponibles à l'adresse suivante : [ici](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/)
+1. Lancer la machine virtuelle  
+1. Télécharger Visual Studio Community Edition 2017 (ces instructions fonctionnent également avec Visual Studio Professional 2017)
+1. Cochez les cases pour le _Développement de bureau avec C++_ et le _Développement Linux avec C++_.
+1. Dans la partie résumé sur le côté droit, cochez également la case _support C++/CLI_.
+1. Cliquez sur installer
+1. Télécharger git-scm pour Windows [ici] (https://git-scm.com/download/win)
+1. Installez git pour Windows en utilisant :
+   1. _Utiliser Git à partir de Git Bash uniquement_ pour ne pas modifier les paramètres de chemin de l'invite de commande.
+   1. _Checkout tel quel, commiter les terminaisons de ligne de style Unix_. Vous ne devriez pas commiter quoi que ce soit de toute façon, mais juste au cas où...
+   1. _Utiliser MinTTY_
+   1. Cochez toutes les cases pour :
       1. Enable file system caching
       1. Enable Git Credential Manager
       1. Enable symbolic links
-1. Download rust for windows [here](https://www.rust-lang.org/en-US/install.html)
-   1. Choose installation option *1*
+1. Télécharger rust pour Windows [ici] (https://www.rust-lang.org/en-US/install.html)
+   1. Choisissez l'option d'installation *1*.
 
-### Get/build dependencies
+### Obtenir/compiler les dépendances
 
-- Open a the Git Bash command prompt
-- Change directories to Downloads:
+- Ouvrez une invite de commande Git Bash
+- Changez les répertoires pour Downloads :
 ```bash
 cd Downloads
 ```
 
-- Clone the _indy-sdk_ repository from github.
+- Clonez le dépôt _indy-sdk_ de github.
 ```bash
 git clone https://github.com/hyperledger/indy-sdk.git
 ```
 
-- Download the prebuilt dependencies [here](https://repo.sovrin.org/windows/libindy/deps/)
-- Extract them into the folder _C:\BIN\x64_
-> It really doesn't matter where you put these as long as you remember where so you can set
-> the environment variables to this path
+- Télécharger les dépendances préconstruites [ici] (https://repo.sovrin.org/windows/libindy/deps/)
+- Extrayez-les dans le dossier _C:\BIN\x64_.
+> L'endroit où vous les mettez n'a pas d'importance, du moment que vous vous souvenez de l'endroit où vous les mettez.
+> les variables d'environnement dans ce chemin
 
-- If you are not building dependencies from source you may skip to *Build*
+- Si vous ne construisez pas les dépendances à partir des sources, vous pouvez passer à *Build*.
 
-### Binary deps
+### Dépôts binaires
 
 - https://www.npcglib.org/~stathis/downloads/openssl-1.0.2k-vs2017.7z
 - https://download.libsodium.org/libsodium/releases/old/libsodium-1.0.14-msvc.zip
 
-### Source deps
+### Dépôt source
 
 - http://www.sqlite.org/2017/sqlite-amalgamation-3180000.zip
 - https://github.com/zeromq/libzmq
 
-### Build sqlite
+### Compiler sqlite
 
-Download http://www.sqlite.org/2017/sqlite-amalgamation-3180000.zip
+Télécharger http://www.sqlite.org/2017/sqlite-amalgamation-3180000.zip
 
-Create an empty static library project in Visual Studio and add `sqlite.c` file and 2 headers from extracted
-archive. Then just build it.
+Créez un projet de bibliothèque statique vide dans Visual Studio et ajoutez le fichier `sqlite.c` et 2 en-têtes de l'archive extraite.
+extraites. Ensuite, il suffit de le construire.
 
-### Build libzmq
+### Compiler libzmq
 
 Follow to http://zeromq.org/intro.
-- Download sources from last stable release for Windows. 
-- Open `zeromq-x.x.x/builds/msvc/vs2015/libzmq.sln` with Visual Studio
-- If necessary change solution platforms on x64(if you are working on x64 arch).
-- On main menu bar choose build->build libzmq.
-- If build project was successful, two files `libzmq.dll` and `libzmq.lib` should appear 
-  in path `zeromq-x.x.x/bin/x64/Debug/vXXX/dynamic`.
-- rename `libzmq.lib` to `zmq.lib`.
+- Téléchargez les sources de la dernière version stable pour Windows. 
+- Ouvrir `zeromq-x.x.x/builds/msvc/vs2015/libzmq.sln` avec Visual Studio
+- Si nécessaire, changez les plates-formes de la solution en x64 (si vous travaillez sur une architecture x64).
+- Dans la barre de menu principale, choisissez build->build libzmq.
+- Si la construction du projet a réussi, deux fichiers `libzmq.dll` et `libzmq.lib` devraient apparaître. 
+  dans le chemin `zeromq-x.x.x/bin/x64/Debug/vXXX/dynamic`.
+- Renommer `libzmq.lib` en `zmq.lib`.
 
-### Build
+### Construire
 
-- Get binary dependencies (libamcl*, openssl, libsodium, libzmq, sqlite3).
-- Put all *.{lib,dll} into one directory and headers into include/ subdirectory.
-- Open a windows command prompt
-- Configure MSVS environment to privide 64-bit builds by execution of `vcvars64.bat`:
+- Obtenir les dépendances binaires (libamcl*, openssl, libsodium, libzmq, sqlite3).
+- Mettez tous les *.{lib,dll} dans un répertoire et les en-têtes dans le sous-répertoire include/.
+- Ouvrez une invite de commande Windows
+- Configurer l'environnement MSVS pour privatiser les constructions 64 bits par l'exécution de `vcvars64.bat` :
   
   ```
   "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\"vcvars64.bat
   ```
   
-  Note that depending on the version of Visual Studio placement of vcvars64.bat can be different. For example, it can be
+  Notez que selon la version de Visual Studio, l'emplacement de vcvars64.bat peut être différent. Par exemple, il peut être
   `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat"`  
-- Execute `"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"`
-- Point path to this directory using environment variables:
+- Exécuter `"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"`
+- Indiquez le chemin d'accès à ce répertoire à l'aide de variables d'environnement :
   - `set INDY_PREBUILT_DEPS_DIR=C:\BIN\x64`
   - `set INDY_CRYPTO_PREBUILT_DEPS_DIR=C:\BIN\x64`
   - `set MILAGRO_DIR=C:\BIN\x64`
   - `set LIBZMQ_PREFIX=C:\BIN\x64`
   - `set SODIUM_LIB_DIR=C:\BIN\x64`
   - `set OPENSSL_DIR=C:\BIN\x64`
-- Set PATH to find .dlls:
+- Définissez PATH pour trouver les .dlls :
   - `set PATH=C:\BIN\x64\lib;%PATH%`
-- change dir to `indy-sdk/libindy` and run `cargo build` (you may want to add `--release --target x86_64-pc-windows-msvc`
-  keys to cargo)
+- changez le répertoire en `indy-sdk/libindy` et lancez `cargo build` (vous pouvez vouloir ajouter `--release --target x86_64-pc-windows-msvc`
+  à cargo)
 
-### openssl-sys workaround
+### contournement d'openssl-sys
 
-If your windows build fails complaining on gdi32.lib you should edit
+Si votre build Windows échoue à se plaindre de gdi32.lib, vous devez éditer
 
 ```
   ~/.cargo/registry/src/github.com-*/openssl-sys-*/build.rs
 ```
 
-and add
+et ajouter
 
 ```
   println!("cargo:rustc-link-lib=dylib=gdi32");
 ```
 
-to the end of `main()` function.
+à la fin de la fonction `main()`.
 
-Then try to rebuild whole project.
+Ensuite, essayez de recompiler l'ensemble du projet.
 
-### Run integration tests
+### Exécuter les tests d'intégration
 
-* Start local nodes pool on `127.0.0.1:9701-9708` with Docker:
+* Démarrer le pool de noeuds locaux sur `127.0.0.1:9701-9708` avec Docker :
  
   ```     
   docker build -f ci/indy-pool.dockerfile -t indy_pool .
   docker run -itd -p 9701-9709:9701-9709 indy_pool
   ```          
  
-  Please note that this port mapping between container and local host requires
-  latest Docker for Windows (linux containers) and windows system with Hyper-V support.
+  Veuillez noter que ce mappage de port entre le conteneur et l'hôte local requiert
+  la dernière version de Docker pour Windows (conteneurs linux) et un système Windows prenant en charge Hyper-V.
   
-  If you use some Docker distribution based on Virtual Box you can use Virtual Box's 
-  port forwarding future to map 9701-9709 container ports to local 9701-9709 ports.
+  Si vous utilisez une distribution Docker basée sur Virtual Box, vous pouvez utiliser le futur transfert de port de Virtual Box pour faire correspondre les ports de conteneurs 9701-9709 aux ports locaux 9701-9709. 
+  de Virtual Box pour faire correspondre les ports 9701-9709 des conteneurs aux ports 9701-9709 locaux.
  
-* Run tests
+* Exécuter les tests
   
   ```
   RUST_TEST_THREADS=1 cargo test
